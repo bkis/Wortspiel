@@ -2,9 +2,12 @@ package de.kritzelbit.wortspiel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 
 
 public final class WordGame {
@@ -17,6 +20,8 @@ public final class WordGame {
 	private boolean rndLetters;
 	private int rndLettersCount;
 	private int currentPoints;
+	private boolean debugMsgs;
+	private Random rnd;
 	
 	
 	private static final WordGame INSTANCE = new WordGame();
@@ -24,16 +29,18 @@ public final class WordGame {
 	private WordGame() {
 		gameDuration = 0;
 		startTime = 0;
+		debugMsgs = true;
+		rnd = new Random();
 	}
 	
-	public static WordGame getInstance() {
+	public static WordGame getGameInstance() {
         return INSTANCE;
     }
 	
 	public void newGame(){
 		//check setup
 		if (!isSetupComplete()){
-			System.out.println("[ERROR] game is not set up properly. the implementation has to call all setup* methods before starting the game.");
+			print("[ERROR] game is not set up properly. the implementation has to call all setup...() methods before starting the game.", true);
 			return;
 		}
 		
@@ -44,7 +51,21 @@ public final class WordGame {
 		
 		currentPoints = 0;
 		startTime = getTimeMillis();
-		System.out.println("[WORDGAME] new game! letters: " + gameLetters);
+		print("[WORDGAME] new game! letters: " + gameLetters, true);
+	}
+	
+	public boolean isValidWord(String word){
+		word = word.toUpperCase();
+		for (int i = 0; i < word.length(); i++) {
+			if (StringUtils.countMatches(word, word.charAt(i)+"") != StringUtils.countMatches(gameLetters, word.charAt(i)+"")){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public void addPoints(int points){
+		currentPoints += points;
 	}
 	
 	public int getTimeLeftInSeconds(){
@@ -60,6 +81,20 @@ public final class WordGame {
 		return currentPoints;
 	}
 	
+	public String getGameLetters(){
+		return gameLetters;
+	}
+	
+	public void shuffleGameLetters(){
+		String shuffled = "";
+		while (gameLetters.length() > 0){
+			char c = gameLetters.charAt(rndInt(gameLetters.length()));
+			shuffled += c;
+			gameLetters = gameLetters.replaceFirst(c+"", "");
+		}
+		gameLetters = shuffled;
+	}
+	
 	public boolean isTimeOut(){
 		if ((getTimeMillis() - startTime) >= gameDuration){
 			return true;
@@ -72,7 +107,7 @@ public final class WordGame {
 	}
 	
 	public void setupAvailableLetters(String lettersString){
-		System.out.print("[WORDGAME] setting up letters set... ");
+		print("[WORDGAME] setting up letters set... ", false);
 		lettersString = lettersString.toUpperCase();
 		langLetters = "";
 		for (int i = 0; i < lettersString.length(); i++) {
@@ -80,11 +115,11 @@ public final class WordGame {
 				langLetters += lettersString.charAt(i);
 			}
 		}
-		System.out.println("OK");
+		print("OK", true);
 	}
 	
 	public void setupAvailableLettersFromWordList(){
-		System.out.print("[WORDGAME] getting letters from words list (this may take a while)... ");
+		print("[WORDGAME] getting letters from words list (this may take a while)... ", false);
 		if (words != null && words.size() > 0){
 			langLetters = "";
 			String curr;
@@ -97,15 +132,15 @@ public final class WordGame {
 				}
 			}
 		} else {
-			System.out.println("[ERROR] no words list loaded to pick letters from!\n");
+			print("[ERROR] no words list loaded to pick letters from!\n", true);
 		}
-		System.out.println("OK");
+		print("OK", true);
 	}
 	
 	public SortedSet<String> setupWordsList(File wordsList){
-		System.out.print("[WORDGAME] loading words list... ");
+		print("[WORDGAME] loading words list... ", false);
 		if (!wordsList.exists() || !wordsList.isFile()){
-			System.out.print("Error! Words list \"" + wordsList.getName() + "\" not found...\n");
+			print("Error! Words list \"" + wordsList.getName() + "\" not found...\n", true);
 			return null;
 		}
 		
@@ -120,7 +155,7 @@ public final class WordGame {
 			e.printStackTrace();
 		}
 		
-		System.out.println("OK");
+		print("OK", true);
 		return words;
 	}
 	
@@ -130,17 +165,25 @@ public final class WordGame {
 	}
 	
 	public void setGameLetters(String letters){
-		gameLetters = letters;
+		gameLetters = letters.toUpperCase();
+	}
+	
+	public void setPrintDebugMessages(boolean printDebugMessages){
+		debugMsgs = printDebugMessages;
 	}
 	
 	private void generateRandomGameLetters(){
 		int rndIndex;
 		gameLetters = "";
 		for (int i = 0; i < rndLettersCount; i++) {
-			rndIndex = (int)((Math.random() * langLetters.length()) + 1);
+			rndIndex = rndInt(langLetters.length());
 			gameLetters += langLetters.charAt(rndIndex);
 		}
 		gameLetters = gameLetters.toUpperCase();
+	}
+	
+	private int rndInt(int betweenZeroAndExclusive){
+		return rnd.nextInt(betweenZeroAndExclusive);
 	}
 	
 	private boolean isSetupComplete(){
@@ -158,6 +201,13 @@ public final class WordGame {
 		return System.currentTimeMillis();
 	}
 	
-	
+	private void print(String msg, boolean lineBreak){
+		if (!debugMsgs) return;
+		if (lineBreak){
+			System.out.println(msg);
+		} else {
+			System.out.print(msg);
+		}
+	}
 
 }
