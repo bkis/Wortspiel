@@ -2,8 +2,10 @@ package de.kritzelbit.wortspiel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -15,6 +17,7 @@ public final class WordGame {
 	private String langLetters;
 	private String gameLetters;
 	private SortedSet<String> words;
+	private Set<String> guessed;
 	private long gameDuration;
 	private long startTime;
 	private boolean rndLetters;
@@ -49,6 +52,7 @@ public final class WordGame {
 			generateRandomGameLetters();
 		}
 		
+		guessed = new HashSet<String>();
 		currentPoints = 0;
 		startTime = getTimeMillis();
 		print("[WORDGAME] new game! letters: " + gameLetters, true);
@@ -57,15 +61,25 @@ public final class WordGame {
 	public boolean isValidWord(String word){
 		word = word.toUpperCase();
 		for (int i = 0; i < word.length(); i++) {
-			if (StringUtils.countMatches(word, word.charAt(i)+"") != StringUtils.countMatches(gameLetters, word.charAt(i)+"")){
+			if (StringUtils.countMatches(word, word.charAt(i)+"") > StringUtils.countMatches(gameLetters, word.charAt(i)+"")
+					|| !words.contains(word)){
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	public void addPoints(int points){
+	public void markAsGuessed(String word){
+		guessed.add(word);
+	}
+	
+	public boolean isAlreadyGuessed(String word){
+		return guessed.contains(word);
+	}
+	
+	public int addPoints(int points){
 		currentPoints += points;
+		return points;
 	}
 	
 	public int getTimeLeftInSeconds(){
@@ -83,6 +97,10 @@ public final class WordGame {
 	
 	public String getGameLetters(){
 		return gameLetters;
+	}
+	
+	public void setGameLetters(String letters){
+		gameLetters = letters.toUpperCase();
 	}
 	
 	public void shuffleGameLetters(){
@@ -137,14 +155,21 @@ public final class WordGame {
 		print("OK", true);
 	}
 	
-	public SortedSet<String> setupWordsList(File wordsList){
+	public String getRandomWordFromList(int length){
+		SortedSet<String> temp = new TreeSet<String>();
+		for (String s : words)
+			if (s.length() == length)
+				temp.add(s);
+		return temp.toArray(new String[0])[rndInt(temp.size())];
+	}
+	
+	public void setupWordsList(File wordsList){
 		print("[WORDGAME] loading words list... ", false);
 		if (!wordsList.exists() || !wordsList.isFile()){
 			print("Error! Words list \"" + wordsList.getName() + "\" not found...\n", true);
-			return null;
 		}
 		
-		SortedSet<String> words = new TreeSet<String>();
+		words = new TreeSet<String>();
 		
 		try {
 			Scanner scanner = new Scanner(wordsList);
@@ -156,7 +181,6 @@ public final class WordGame {
 		}
 		
 		print("OK", true);
-		return words;
 	}
 	
 	public void setupUseRandomGameLetters(boolean useRandomGameLetters, int letterCount){
@@ -164,14 +188,18 @@ public final class WordGame {
 		rndLettersCount = letterCount;
 	}
 	
-	public void setGameLetters(String letters){
-		gameLetters = letters.toUpperCase();
-	}
-	
 	public void setPrintDebugMessages(boolean printDebugMessages){
 		debugMsgs = printDebugMessages;
 	}
 	
+	public Set<String> getAllPossibleWords(){
+		Set<String> temp = new HashSet<String>();
+		for (String word : words){
+			if (isValidWord(word)) temp.add(word);
+		}
+		return temp;
+	}
+
 	private void generateRandomGameLetters(){
 		int rndIndex;
 		gameLetters = "";
