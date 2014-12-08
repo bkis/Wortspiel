@@ -58,23 +58,28 @@ public final class WordGame {
 		print("[WORDGAME] new game! letters: " + gameLetters, true);
 	}
 	
-	public boolean isValidWord(String word){
+	public boolean isValid(String word){
 		word = word.toUpperCase();
 		for (int i = 0; i < word.length(); i++) {
-			if (StringUtils.countMatches(word, word.charAt(i)+"") > StringUtils.countMatches(gameLetters, word.charAt(i)+"")
-					|| !words.contains(word)){
+			if (StringUtils.countMatches(word, word.charAt(i)+"") > StringUtils.countMatches(gameLetters, word.charAt(i)+"")){
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	public void markAsGuessed(String word){
-		guessed.add(word);
+	public boolean isInList(String word){
+		word = word.toUpperCase();
+		return words.contains(word);
 	}
 	
 	public boolean isAlreadyGuessed(String word){
+		word = word.toUpperCase();
 		return guessed.contains(word);
+	}
+	
+	public void markAsGuessed(String word){
+		guessed.add(word.toUpperCase());
 	}
 	
 	public int addPoints(int points){
@@ -195,7 +200,7 @@ public final class WordGame {
 	public Set<String> getAllPossibleWords(){
 		Set<String> temp = new HashSet<String>();
 		for (String word : words){
-			if (isValidWord(word)) temp.add(word);
+			if (isValid(word)) temp.add(word);
 		}
 		return temp;
 	}

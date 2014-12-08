@@ -12,10 +12,12 @@ public class Main {
 		String input = "";
 		
 		//game setup
+		game.setPrintDebugMessages(false);
 		game.setupGameDurationInMinutes(3);
 		game.setupWordsList(words);
 		game.setupAvailableLettersFromWordList();
 		game.setupUseRandomGameLetters(false, 0);
+		
 		//game.setGameLetters(game.getRandomWordFromList(10));
 		
 		//intro
@@ -27,7 +29,7 @@ public class Main {
 		
 		System.out.print("Bitte gib das Quellwort ein: ");
 		game.setGameLetters(scanner.nextLine());
-		System.out.println("\n\n");
+		System.out.println("\n");
 		
 		//game loop
 		game.newGame();
@@ -46,11 +48,13 @@ public class Main {
 			
 			System.out.println("======================================");
 			
-			if (game.isValidWord(input) && !game.isAlreadyGuessed(input)){
-				System.out.println("RICHTIG! +" + game.addPoints(input.length()) + " PUNKTE!");
-				game.markAsGuessed(input);
+			if (!game.isValid(input)){
+				System.out.println("Dieses Wort lässt sich nicht aus \"" + game.getGameLetters() + "\" bilden!");
+			} else if (!game.isInList(input)) {
+				System.out.println("Was soll das denn sein?!");
 			} else {
-				System.out.println("FALSCH!");
+				System.out.println("RICHTIG! +" + game.addPoints(input.length()) + " Punkte!");
+				game.markAsGuessed(input);
 			}
 			
 			//game.shuffleGameLetters();
