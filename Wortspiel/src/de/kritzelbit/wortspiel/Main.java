@@ -9,7 +9,7 @@ public class Main {
 		File words = new File("de.txt");
 		Scanner scanner = new Scanner(System.in);
 		WordGame game = WordGame.getGameInstance();
-		String input;
+		String input = "";
 		
 		//game setup
 		game.setupGameDurationInMinutes(3);
@@ -25,7 +25,7 @@ public class Main {
 		System.out.println("######################\n");
 		
 		//game loop
-		while (!(input = scanner.nextLine()).equalsIgnoreCase("exit")){
+		while (!input.equalsIgnoreCase("exit")){
 			System.out.println("[WORTSPIEL] Zeit übrig: " + game.getTimeLeftInMinutesAndSeconds(":") + " Minuten");
 			System.out.println("[WORTSPIEL] Buchstaben: " + game.getGameLetters());
 			
