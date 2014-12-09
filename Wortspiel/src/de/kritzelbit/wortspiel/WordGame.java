@@ -105,7 +105,7 @@ public final class WordGame {
 	}
 	
 	public void setGameLetters(String letters){
-		letters = letters.replaceAll("[^A-Za-z������]", "");
+		letters = letters.replaceAll("[^A-Za-zÜÖÄüöä]", "");
 		gameLetters = letters.toUpperCase();
 	}
 	

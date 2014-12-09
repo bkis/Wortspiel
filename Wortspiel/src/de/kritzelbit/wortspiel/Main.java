@@ -35,7 +35,7 @@ public class Main {
 		game.newGame();
 		while (!game.isTimeOut()){
 			System.out.println("======================================");
-			System.out.println("Zeit �brig: " + game.getTimeLeftInMinutesAndSeconds(":") + " Minuten");
+			System.out.println("Zeit übrig: " + game.getTimeLeftInMinutesAndSeconds(":") + " Minuten");
 			System.out.println("Buchstaben: " + game.getGameLetters());
 			
 			input = scanner.nextLine();
@@ -49,7 +49,7 @@ public class Main {
 			System.out.println("======================================");
 			
 			if (!game.isValid(input)){
-				System.out.println("Dieses Wort l�sst sich nicht aus \"" + game.getGameLetters() + "\" bilden!");
+				System.out.println("Dieses Wort lässt sich nicht aus \"" + game.getGameLetters() + "\" bilden!");
 			} else if (!game.isInList(input)) {
 				System.out.println("Was soll das denn sein?!");
 			} else if (game.isAlreadyGuessed(input)){
