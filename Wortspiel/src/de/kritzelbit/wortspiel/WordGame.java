@@ -49,7 +49,7 @@ public final class WordGame {
 		
 		//generate random game letters
 		if (rndLetters){
-			generateRandomGameLetters();
+			generateRandomGameLetters(rndLettersCount);
 		}
 		
 		guessed = new HashSet<String>();
@@ -161,12 +161,15 @@ public final class WordGame {
 		print("OK", true);
 	}
 	
-	public String getRandomWordFromList(int length){
+	public String getRandomWordFromList(int lengthHint){
 		SortedSet<String> temp = new TreeSet<String>();
 		for (String s : words)
-			if (s.length() == length)
+			if (s.length() == lengthHint)
 				temp.add(s);
-		return temp.toArray(new String[0])[rndInt(temp.size())];
+		if (temp.size() > 0)
+			return temp.toArray(new String[0])[rndInt(temp.size())];
+		else
+			return generateRandomGameLetters(lengthHint);
 	}
 	
 	public void setupWordsList(File wordsList){
@@ -206,14 +209,15 @@ public final class WordGame {
 		return temp;
 	}
 
-	private void generateRandomGameLetters(){
+	private String generateRandomGameLetters(int length){
 		int rndIndex;
-		gameLetters = "";
-		for (int i = 0; i < rndLettersCount; i++) {
+		String gameLetters = "";
+		for (int i = 0; i < length; i++) {
 			rndIndex = rndInt(langLetters.length());
 			gameLetters += langLetters.charAt(rndIndex);
 		}
 		gameLetters = gameLetters.toUpperCase();
+		return gameLetters;
 	}
 	
 	private int rndInt(int betweenZeroAndExclusive){

@@ -65,7 +65,7 @@ public class Main {
 		System.out.println("======================================");
 		System.out.println("ZEIT ABGELAUFEN! PUNKTESTAND: " + game.getCurrentPoints());
 		System.out.println("======================================");
-		System.out.println("Diese W�rter w�ren m�glich gewesen:");
+		System.out.println("Diese Wörter wären möglich gewesen:");
 		
 		for (String word : game.getAllPossibleWords()) System.out.print(word + " ");
 	}
