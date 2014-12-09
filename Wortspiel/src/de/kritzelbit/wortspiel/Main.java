@@ -52,6 +52,8 @@ public class Main {
 				System.out.println("Dieses Wort l�sst sich nicht aus \"" + game.getGameLetters() + "\" bilden!");
 			} else if (!game.isInList(input)) {
 				System.out.println("Was soll das denn sein?!");
+			} else if (game.isAlreadyGuessed(input)){
+				System.out.println("Wort \"" + input.toUpperCase() + "\" bereits gefunden!");
 			} else {
 				System.out.println("RICHTIG! +" + game.addPoints(input.length()) + " Punkte!");
 				game.markAsGuessed(input);
