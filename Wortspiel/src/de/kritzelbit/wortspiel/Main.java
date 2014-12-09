@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.Scanner;
 
 public class Main {
-
+	
 	public static void main(String[] args) {
-		File words = new File("de.txt");
+		File words = new File("data/de.txt");
 		Scanner scanner = new Scanner(System.in);
 		WordGame game = WordGame.getGameInstance();
 		String input = "";
@@ -35,7 +35,7 @@ public class Main {
 		game.newGame();
 		while (!game.isTimeOut()){
 			System.out.println("======================================");
-			System.out.println("Zeit übrig: " + game.getTimeLeftInMinutesAndSeconds(":") + " Minuten");
+			System.out.println("Zeit ï¿½brig: " + game.getTimeLeftInMinutesAndSeconds(":") + " Minuten");
 			System.out.println("Buchstaben: " + game.getGameLetters());
 			
 			input = scanner.nextLine();
@@ -49,7 +49,7 @@ public class Main {
 			System.out.println("======================================");
 			
 			if (!game.isValid(input)){
-				System.out.println("Dieses Wort lässt sich nicht aus \"" + game.getGameLetters() + "\" bilden!");
+				System.out.println("Dieses Wort lï¿½sst sich nicht aus \"" + game.getGameLetters() + "\" bilden!");
 			} else if (!game.isInList(input)) {
 				System.out.println("Was soll das denn sein?!");
 			} else {
@@ -63,7 +63,7 @@ public class Main {
 		System.out.println("======================================");
 		System.out.println("ZEIT ABGELAUFEN! PUNKTESTAND: " + game.getCurrentPoints());
 		System.out.println("======================================");
-		System.out.println("Diese Wörter wären möglich gewesen:");
+		System.out.println("Diese Wï¿½rter wï¿½ren mï¿½glich gewesen:");
 		
 		for (String word : game.getAllPossibleWords()) System.out.print(word + " ");
 	}
